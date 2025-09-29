@@ -8,29 +8,33 @@ export function isTypeOf<A extends string>(str: string, array: Readonly<Array<A>
   return foundKey;
 }
 
-export const CityValues = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'] as const;
-export type City = typeof CityValues[number];
+export enum City {
+  Paris = 'Paris',
+  Cologne = 'Cologne',
+  Brussels = 'Brussels',
+  Amsterdam = 'Amsterdam',
+  Hamburg = 'Hamburg',
+  Dusseldorf = 'Dusseldorf',
+}
 
-export const OfferTypeValues = ['apartment', 'house', 'room', 'hotel']as const;
-export type OfferType = typeof OfferTypeValues[number];
+export enum OfferType {
+  Apartment = 'apartment',
+  House = 'house',
+  Room = 'room',
+  Hotel = 'hotel',
+}
+
+export enum Goods {
+  Breakfast = 'Breakfast',
+  AirConditioning = 'Air conditioning',
+  LaptopFriendlyWorkspace = 'Laptop friendly workspace',
+  BabySeat = 'Baby seat',
+  Washer = 'Washer',
+  Towels = 'Towels',
+  Fridge = 'Fridge',
+}
 
 export type UserType = 'ordinary' | 'pro' ;
-
-export const GoodValues = [
-  'Breakfast',
-  'Air conditioning',
-  'Laptop friendly workspace',
-  'Baby seat',
-  'Washer',
-  'Towels',
-  'Fridge',
-] as const;
-export type Good = typeof GoodValues[number];
-
-export interface Coordinates {
-  latitude: number;
-  longitude: number;
-}
 
 export interface UserInput {
   name: string; // 1..15
@@ -53,7 +57,7 @@ export interface OfferInput {
   postDate: string;
   city: City;
   previewImage: string;
-  photos: Array<string>; // 6
+  images: Array<string>; // 6
   isPremium: boolean;
   isFavorite: boolean;
   rating: number; // 1..5
@@ -61,9 +65,12 @@ export interface OfferInput {
   rooms: number; // 1..8
   guests: number; // 1..10
   price: number; // 100..100000
-  goods: Good[];
+  goods: Goods[];
   authorEmail: string;
-  coordinates: Coordinates;
+  coordinates: {
+    latitude: number,
+    longitude: number,
+  };
 }
 
 export interface Offer extends OfferInput {
