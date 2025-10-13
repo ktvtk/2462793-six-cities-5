@@ -80,6 +80,17 @@ export interface Offer extends OfferInput {
   commentsCount: number;
 }
 
-export interface MockServerResponse {
-  offers: Offer[]
+export interface MockOfferData {
+  titles: string[];
+  descriptions: string[];
+  previewImages: string[];
+  images: string[];
+  authorsName: string[];
+  authorEmail: string[];
+  avatars: string[];
+  coordinates: { latitude: number; longitude: number }[];
+}
+
+export interface MockData {
+  offers: MockOfferData[];
 }

@@ -1,4 +1,9 @@
-import {City, OfferType, Goods, OfferInput, Offer} from '../../../types';
+import {
+  City,
+  OfferType,
+  Goods,
+  MockOfferData
+} from '../../../types/index.js';
 
 export class DataGenerator {
   private readonly cities = Object.values(City);
@@ -43,8 +48,12 @@ export class DataGenerator {
     return coordinates[city];
   }
 
-  public generateOffer(mockData: OfferInput, authorName: string, authorEmail: string, authorAvatar: string, id: string, commentsCount: number): Offer {
-
+  public generateOffer(mockData: MockOfferData, authorName: string, authorEmail: string, authorAvatar: string, id: string, commentsCount: number): string {
+    const title= this.getRandomElement(mockData.titles);
+    const description= this.getRandomElement(mockData.descriptions);
+    const postDate = this.generateRandomDate();
+    const previewImage = this.getRandomElement(mockData.previewImages);
+    const goods = this.generateRandomGoods();
     const city = this.getRandomElement(this.cities);
     const type = this.getRandomElement(this.offerTypes);
     const rooms = this.generateRandomNumber(1, 8);
@@ -53,16 +62,18 @@ export class DataGenerator {
     const rating = this.generateRandomFloat(1, 5);
     const isPremium = Math.random() < 0.3;
     const isFavorite = Math.random() < 0.2;
+    const imagesString = this.getRandomElement(mockData.images);
+    const images = imagesString.split(';').slice(0, 6);
 
     const cityCoordinates = this.getCityCoordinates(city);
 
-    return {
-      title: mockData.title,
-      description: mockData.description,
-      postDate: this.generateRandomDate(),
+    return [
+      title,
+      description,
+      postDate,
       city,
-      previewImage: mockData.previewImage,
-      images: mockData.images,
+      previewImage,
+      images,
       isPremium,
       isFavorite,
       rating,
@@ -70,16 +81,14 @@ export class DataGenerator {
       rooms,
       guests,
       price,
-      goods: this.generateRandomGoods(),
+      goods,
       authorName,
       authorEmail,
       authorAvatar,
-      coordinates: {
-        latitude: cityCoordinates.latitude,
-        longitude: cityCoordinates.longitude
-      },
+      `${cityCoordinates.latitude},${cityCoordinates.longitude}`,
       id,
       commentsCount
-    };
+    ].join('\t');
   }
 }
+

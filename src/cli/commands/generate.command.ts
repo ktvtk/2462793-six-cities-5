@@ -1,11 +1,11 @@
 import {Command} from './command.interface';
-import got from 'got';
 import {DataGenerator} from '../../shared/libs/data-generator/data-generator.js';
-import {Offer, MockServerResponse} from '../../types/index.js';
+import {MockOfferData} from '../../types/index.js';
 import {createWriteStream} from 'node:fs';
 import {Transform} from 'node:stream';
 import {pipeline} from 'node:stream/promises';
 import chalk from 'chalk';
+import axios from "axios";
 
 
 export class GenerateCommand implements Command {
@@ -15,17 +15,15 @@ export class GenerateCommand implements Command {
     return '--generate';
   }
 
-  private async load(url: string): Promise<MockServerResponse> {
+  private async load(url: string) {
     try {
-      const response = await got.get(`${url}/offers`);
-      const offers = JSON.parse(response.body) as Offer[];
-      return { offers };
+      return (await axios.get(url)).data
     } catch {
-      throw new Error(`Cannot load data from ${url}`);
+      throw new Error(`Can't load data from ${url}`);
     }
   }
 
-  private async write(mockData: MockServerResponse, count: number, filepath: string): Promise<void> {
+  private async write(mockData: MockOfferData, count: number, filepath: string): Promise<void> {
     const writeStream = createWriteStream(filepath);
 
     const header = 'title\tdescription\tdate\tcity\tpreviewImage\timages\tisPremium\tisFavorite\trating\thousingType\trooms\tguests\tprice\tcomforts\tauthorName\tauthorEmail\tauthorAvatar\tpassword\tuserType\tlatitude\tlongitude\n';
@@ -33,49 +31,26 @@ export class GenerateCommand implements Command {
 
     const transformStream = new Transform({
       objectMode: true,
-      transform: (chunk: Offer, _encoding, callback) => {
-        const line = `${this.formatOfferAsTSV(chunk) }\n`;
-        callback(null, line);
+      transform: (chunk: string, _encoding, callback) => {
+        callback(null, chunk);
       }
     });
 
     for (let i = 0; i < count; i++) {
-      const mockOffer = this.dataGenerator.getRandomElement(mockData.offers);
       const authorName = `User${this.dataGenerator.generateRandomNumber(1, 100)}`;
       const authorEmail = `user${this.dataGenerator.generateRandomNumber(1, 100)}@example.com`;
       const authorAvatar = `/img/user-avatar${this.dataGenerator.generateRandomNumber(1, 10)}.png`;
+      const id = `${this.dataGenerator.generateRandomNumber(1, 200)}`;
+      const commentCount = this.dataGenerator.generateRandomNumber(0, 10);
 
-      const generatedOffer = this.dataGenerator.generateOffer(mockOffer, authorName, authorEmail, authorAvatar, password, userType);
-
+      const generatedOffer = this.dataGenerator.generateOffer(mockData, authorName, authorEmail, authorAvatar, id, commentCount);
+      console.log(generatedOffer);
       transformStream.write(generatedOffer);
     }
 
     transformStream.end();
 
     await pipeline(transformStream, writeStream);
-  }
-
-  private formatOfferAsTSV(offer: Offer): string {
-    return [
-      offer.title,
-      offer.description,
-      offer.postDate,
-      offer.city,
-      offer.previewImage,
-      offer.images,
-      offer.isPremium,
-      offer.isFavorite,
-      offer.rating,
-      offer.type,
-      offer.rooms,
-      offer.guests,
-      offer.price,
-      offer.goods,
-      offer.authorName,
-      offer.authorEmail,
-      offer.authorAvatar,
-      offer.coordinates
-    ].join('\t');
   }
 
   public async execute(...parameters: string[]): Promise<void> {

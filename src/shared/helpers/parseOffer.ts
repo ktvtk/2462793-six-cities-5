@@ -1,4 +1,4 @@
-import {City, Goods, Offer, OfferType} from '../../types';
+import {City, Goods, Offer, OfferType} from '../../types/index.js';
 
 export function parseOffer(data: string): Offer {
   const [
