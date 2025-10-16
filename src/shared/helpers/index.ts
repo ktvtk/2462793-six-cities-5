@@ -1,2 +1,2 @@
-export * from './common';
-export * from './parseOffer';
+export * from './common.js';
+export * from './parseOffer.js';

@@ -5,7 +5,7 @@ import {createWriteStream} from 'node:fs';
 import {Transform} from 'node:stream';
 import {pipeline} from 'node:stream/promises';
 import chalk from 'chalk';
-import axios from "axios";
+import axios from 'axios';
 
 
 export class GenerateCommand implements Command {
@@ -17,7 +17,7 @@ export class GenerateCommand implements Command {
 
   private async load(url: string) {
     try {
-      return (await axios.get(url)).data
+      return (await axios.get(url)).data;
     } catch {
       throw new Error(`Can't load data from ${url}`);
     }
@@ -26,13 +26,10 @@ export class GenerateCommand implements Command {
   private async write(mockData: MockOfferData, count: number, filepath: string): Promise<void> {
     const writeStream = createWriteStream(filepath);
 
-    const header = 'title\tdescription\tdate\tcity\tpreviewImage\timages\tisPremium\tisFavorite\trating\thousingType\trooms\tguests\tprice\tcomforts\tauthorName\tauthorEmail\tauthorAvatar\tpassword\tuserType\tlatitude\tlongitude\n';
-    writeStream.write(header);
-
     const transformStream = new Transform({
       objectMode: true,
       transform: (chunk: string, _encoding, callback) => {
-        callback(null, chunk);
+        callback(null, `${chunk}\n`);
       }
     });
 

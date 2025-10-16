@@ -7,12 +7,7 @@ export function parseOffer(data: string): Offer {
     postDate,
     city,
     previewImage,
-    image1,
-    image2,
-    image3,
-    image4,
-    image5,
-    image6,
+    images,
     isPremium,
     isFavorite,
     rating,
@@ -24,10 +19,10 @@ export function parseOffer(data: string): Offer {
     authorName,
     authorEmail,
     authorAvatar,
-    id,
     latitude,
-    longitude] = data.replace('\n', '')
-    .split('\t');
+    longitude,
+    id,
+    commentCount] = data.split('\t');
 
   return {
     title,
@@ -35,11 +30,11 @@ export function parseOffer(data: string): Offer {
     postDate: postDate,
     city: City[city as keyof typeof City],
     previewImage,
-    images: [image1, image2, image3, image4, image5, image6],
+    images: images.split(','),
     isPremium: isPremium === 'true',
     isFavorite: isFavorite === 'true',
     rating: parseFloat(rating),
-    type: OfferType[type as keyof typeof OfferType],
+    type: type as OfferType,
     rooms: parseInt(bedrooms, 10),
     guests: parseInt(maxGuests, 10),
     price: parseInt(price, 10),
@@ -48,7 +43,7 @@ export function parseOffer(data: string): Offer {
     authorEmail,
     authorAvatar,
     id,
-    commentsCount: 0,
+    commentsCount: parseInt(commentCount, 10),
     coordinates: {latitude: parseFloat(latitude), longitude: parseFloat(longitude)},
   };
 }

@@ -49,8 +49,8 @@ export class DataGenerator {
   }
 
   public generateOffer(mockData: MockOfferData, authorName: string, authorEmail: string, authorAvatar: string, id: string, commentsCount: number): string {
-    const title= this.getRandomElement(mockData.titles);
-    const description= this.getRandomElement(mockData.descriptions);
+    const title = this.getRandomElement(mockData.titles);
+    const description = this.getRandomElement(mockData.descriptions);
     const postDate = this.generateRandomDate();
     const previewImage = this.getRandomElement(mockData.previewImages);
     const goods = this.generateRandomGoods();
@@ -65,7 +65,8 @@ export class DataGenerator {
     const imagesString = this.getRandomElement(mockData.images);
     const images = imagesString.split(';').slice(0, 6);
 
-    const cityCoordinates = this.getCityCoordinates(city);
+    const latitude = this.getCityCoordinates(city).latitude;
+    const longitude = this.getCityCoordinates(city).longitude;
 
     return [
       title,
@@ -85,7 +86,8 @@ export class DataGenerator {
       authorName,
       authorEmail,
       authorAvatar,
-      `${cityCoordinates.latitude},${cityCoordinates.longitude}`,
+      latitude,
+      longitude,
       id,
       commentsCount
     ].join('\t');

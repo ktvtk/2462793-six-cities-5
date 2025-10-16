@@ -16,7 +16,7 @@
     "clean": "rimraf dist",
     "ts": "ts-node",
     "cli": "npm run build && node ./dist/main.cli.js",
-    "mock:server": "json-server ./src/mocks/mock-server-data.json --port 3012"
+    "mock:server": "json-server ./src/mocks/mock-server-data.json --port 3022"
   },
   "devDependencies": {
     "@types/got": "^9.6.12",
