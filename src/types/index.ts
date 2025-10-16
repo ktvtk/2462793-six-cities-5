@@ -57,7 +57,7 @@ export interface OfferInput {
   postDate: string;
   city: City;
   previewImage: string;
-  images: Array<string>; // 6
+  images: string[]; // 6
   isPremium: boolean;
   isFavorite: boolean;
   rating: number; // 1..5
@@ -66,7 +66,9 @@ export interface OfferInput {
   guests: number; // 1..10
   price: number; // 100..100000
   goods: Goods[];
+  authorName: string;
   authorEmail: string;
+  authorAvatar: string;
   coordinates: {
     latitude: number,
     longitude: number,
@@ -76,4 +78,19 @@ export interface OfferInput {
 export interface Offer extends OfferInput {
   id: string;
   commentsCount: number;
+}
+
+export interface MockOfferData {
+  titles: string[];
+  descriptions: string[];
+  previewImages: string[];
+  images: string[];
+  authorsName: string[];
+  authorEmail: string[];
+  avatars: string[];
+  coordinates: { latitude: number; longitude: number }[];
+}
+
+export interface MockData {
+  offers: MockOfferData[];
 }

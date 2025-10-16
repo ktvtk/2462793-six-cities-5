@@ -1,0 +1,57 @@
+{
+  "api": {
+    "titles": [
+      "House in countryside",
+      "Tile House",
+      "Canal View Prinsengracht",
+      "The house among olive",
+      "Wood and stone place"
+    ],
+    "descriptions": [
+      "Design interior in most sympathetic area! Complitely renovated, well-equipped, cosy studio in idyllic, over 100 years old wooden house. Calm street, fast connection to center and airport",
+      "I am happy to welcome you to my apartment in the city center! Three words: location, cosy and chic!",
+      "I rent out a very sunny and bright apartment only 7 minutes walking distance to the metro station. The apartment has a spacious living room with a kitchen, one bedroom and a bathroom with mit bath. A terrace can be used in summer.",
+      "Relax, rejuvenate and unplug in this ultimate rustic getaway experience in the country. In our beautiful screened Pondhouse, you can gaze at the stars and listen to the sounds of nature from your cozy warm bed.",
+      "A new spacious villa, one floor. All commodities, jacuzzi and beautiful scenery. Ideal for families or friends."
+    ],
+    "previewImages": [
+      "https://images.example.com/preview1.jpg",
+      "https://images.example.com/preview2.jpg",
+      "https://images.example.com/preview3.jpg",
+      "https://images.example.com/preview4.jpg",
+      "https://images.example.com/preview5.jpg"
+    ],
+    "images": [
+      "https://images.example.com/photo1.jpg;https://images.example.com/photo2.jpg;https://images.example.com/photo3.jpg;https://images.example.com/photo4.jpg;https://images.example.com/photo5.jpg;https://images.example.com/photo6.jpg",
+      "https://images.example.com/photo7.jpg;https://images.example.com/photo8.jpg;https://images.example.com/photo9.jpg;https://images.example.com/photo10.jpg;https://images.example.com/photo11.jpg;https://images.example.com/photo12.jpg",
+      "https://images.example.com/photo1.jpg;https://images.example.com/photo2.jpg;https://images.example.com/photo3.jpg;https://images.example.com/photo4.jpg;https://images.example.com/photo14.jpg;https://images.example.com/photo13.jpg",
+      "https://images.example.com/photo9.jpg;https://images.example.com/photo10.jpghttps://images.example.com/photo14.jpg;https://images.example.com/photo21.jpghttps://images.example.com/photo19.jpg;https://images.example.com/photo11.jpg",
+      "https://images.example.com/photo2.jpg;https://images.example.com/photo12.jpg;https://images.example.com/photo16.jpg;https://images.example.com/photo22.jpg;https://images.example.com/photo17.jpg;https://images.example.com/photo15.jpg"
+    ],
+    "authorsName": [
+      "John Doe", "Max Ivanov", "Ann Smith", "Liza Fedorova", "Mary Yang"
+    ],
+    "authorEmail": [
+      "johndoe@example.com", "emmail.@example.com", "someemail@gm.com", "abasd@fdmfm.com", "ktvtk232@ex.com"
+    ],
+    "avatars": [
+      "https://avatars.example.com/avatar1.jpg",
+      "https://avatars.example.com/user.jpg",
+      "https://avatars.example.com/photo.jpg",
+      "https://avatars.example.com/some-avatar.jpg",
+      "https://avatars.example.com/roland.jpg",
+      "https://avatars.example.com/smith.jpg",
+      "https://avatars.example.com/me.jpg"
+    ],
+    "coordinates": [
+      {"latitude": 48.85661, "longitude": 2.351499},
+      {"latitude": 50.938361, "longitude": 6.959974},
+      {"latitude": 50.846557, "longitude": 4.351697},
+      {"latitude": 52.370216, "longitude": 4.895168},
+      {"latitude": 53.550341, "longitude": 10.000654},
+      {"latitude": 51.225402, "longitude": 6.776314},
+      {"latitude": 48.85661, "longitude": 2.351499},
+      {"latitude": 52.370216, "longitude": 4.895168}
+    ]
+  }
+}
