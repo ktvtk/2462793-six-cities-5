@@ -91,6 +91,9 @@ export interface MockOfferData {
   coordinates: { latitude: number; longitude: number }[];
 }
 
-export interface MockData {
-  offers: MockOfferData[];
-}
+export const Component = {
+  RestApplication: Symbol.for('RestApplication'),
+  Logger: Symbol.for('Logger'),
+  Config: Symbol.for('Config')
+} as const;
+
