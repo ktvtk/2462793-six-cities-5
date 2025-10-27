@@ -46,8 +46,10 @@
     "dayjs": "^1.11.18",
     "dotenv": "17.2.3",
     "inversify": "7.10.2",
+    "mongoose": "8.19.1",
     "pino": "^10.1.0",
     "pino-pretty": "^9.4.1",
-    "reflect-metadata": "0.2.2"
+    "reflect-metadata": "0.2.2",
+    "@typegoose/typegoose": "^12.20.0"
   }
 }
