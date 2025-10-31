@@ -36,7 +36,7 @@ export function parseOffer(data: string): Offer {
     rating: parseFloat(rating),
     type: type as OfferType,
     rooms: parseInt(bedrooms, 10),
-    guests: parseInt(maxGuests, 10),
+    maxGuests: parseInt(maxGuests, 10),
     price: parseInt(price, 10),
     goods: goods.split(';').map((good) => good as Goods),
     authorName,
