@@ -1,6 +1,7 @@
 import {City} from './city.enum.js';
 import {OfferType} from './offer-type.enum.js';
 import {Goods} from './goods.enum.js';
+import {User} from "./user.type";
 
 export interface OfferInput {
   title: string;
@@ -17,9 +18,7 @@ export interface OfferInput {
   maxGuests: number; // 1..10
   price: number; // 100..100000
   goods: Goods[];
-  authorName: string;
-  authorEmail: string;
-  authorAvatar: string;
+  author: User;
   coordinates: {
     latitude: number,
     longitude: number,

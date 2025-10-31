@@ -110,7 +110,7 @@ export class OfferEntity extends defaultClasses.TimeStamps{
     required: true,
     type: LocationEntity
   })
-  public location: LocationEntity;
+  public coordinates: LocationEntity;
 }
 
 export const OfferModel = getModelForClass(OfferEntity);
