@@ -34,13 +34,13 @@ export class GenerateCommand implements Command {
     });
 
     for (let i = 0; i < count; i++) {
-      const authorName = `User${this.dataGenerator.generateRandomNumber(1, 100)}`;
-      const authorEmail = `user${this.dataGenerator.generateRandomNumber(1, 100)}@example.com`;
-      const authorAvatar = `/img/user-avatar${this.dataGenerator.generateRandomNumber(1, 10)}.png`;
+      const name = `User${this.dataGenerator.generateRandomNumber(1, 10)}`;
+      const email = `user${this.dataGenerator.generateRandomNumber(1, 10)}@example.com`;
+      const avatar = `/img/user-avatar${this.dataGenerator.generateRandomNumber(1, 10)}.png`;
       const id = `${this.dataGenerator.generateRandomNumber(1, 200)}`;
       const commentCount = this.dataGenerator.generateRandomNumber(0, 10);
 
-      const generatedOffer = this.dataGenerator.generateOffer(mockData, authorName, authorEmail, authorAvatar, id, commentCount);
+      const generatedOffer = this.dataGenerator.generateOffer(mockData, name, email, avatar, id, commentCount);
       console.log(generatedOffer);
       transformStream.write(generatedOffer);
     }

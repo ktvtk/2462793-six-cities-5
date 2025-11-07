@@ -33,7 +33,6 @@ export class UserEntity extends defaultClasses.TimeStamps implements User{
   @prop({
     required: true,
     minlength: 6,
-    maxlength: 12,
     select: false,
     default: '',
   })
