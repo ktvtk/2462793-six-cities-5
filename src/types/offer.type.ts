@@ -1,7 +1,7 @@
 import {City} from './city.enum.js';
 import {OfferType} from './offer-type.enum.js';
 import {Goods} from './goods.enum.js';
-import {User} from "./user.type";
+import {User} from './user.type';
 
 export interface OfferInput {
   title: string;

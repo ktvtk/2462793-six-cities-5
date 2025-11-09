@@ -21,6 +21,8 @@ tags:
     description: Действия с комментариями.
   - name: users
     description: Действия с пользователем.
+  - name: favorites
+    description: Действия с избранными объявлениями.
 
 
 components:
@@ -588,6 +590,24 @@ paths:
               schema:
                 type: object
                 additionalProperties: false
+
+  /favorites:
+    get:
+      tags: [ favorites ]
+      summary: Получить список избранных объявлений
+      security:
+        - token: [ ]
+      responses:
+        "200":
+          description: Избранные объявления.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Offer'
+        "401":
+          description: Требуется авторизация.
 
 
 security:

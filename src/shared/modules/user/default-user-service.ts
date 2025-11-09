@@ -5,6 +5,7 @@ import {Component} from '../../../types/index.js';
 import { UserService } from './index.js';
 import {inject, injectable} from 'inversify';
 import { Logger } from '../../libs/logger/pino.logger.js';
+import {UpdateUserDTO} from './dto/update-user.dto.js';
 
 @injectable()
 export class DefaultUserService implements UserService {
@@ -37,5 +38,16 @@ export class DefaultUserService implements UserService {
       return existedUser;
     }
     return this.create(dto, salt);
+  }
+
+  public async existsByEmail(email: string): Promise<boolean> {
+    return (await this.userModel
+      .exists({_email: email})) !== null;
+  }
+
+  public async update(id: string, dto: UpdateUserDTO): Promise<DocumentType<UserEntity> | null> {
+    return this.userModel
+      .findByIdAndUpdate(id, dto, {new: true})
+      .exec();
   }
 }

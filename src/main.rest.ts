@@ -4,13 +4,21 @@ import 'reflect-metadata';
 import { RestApplication, createRestApplicationContainer } from './rest/index.js';
 import { createUserContainer } from './shared/modules/user/index.js';
 import { createOfferContainer } from './shared/modules/offer/index.js';
+import {createCommentContainer} from './shared/modules/comment/index.js';
+import {Container} from 'inversify';
+import {createFavoritesContainer} from './shared/modules/favorites/favorites.container.js';
 
 async function bootstrap() {
-  const restContainer = createRestApplicationContainer();
-  const userContainer = createUserContainer(restContainer);
-  const offerContainer = createOfferContainer(userContainer);
+  const appContainer = Container.merge(
+    createRestApplicationContainer(),
+    createUserContainer(),
+    createOfferContainer(),
+    createCommentContainer(),
+    createFavoritesContainer(),
+  );
 
-  const app = offerContainer.get<RestApplication>(Component.RestApplication);
+
+  const app = appContainer.get<RestApplication>(Component.RestApplication);
   await app.init();
 }
 
