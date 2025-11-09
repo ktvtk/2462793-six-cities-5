@@ -1,12 +1,11 @@
-import {injectable} from "inversify";
-import {inject} from "inversify/lib/esm";
-import {Component} from "../../../types";
-import {Logger} from "../../libs/logger";
-import {DocumentType, types} from "@typegoose/typegoose";
-import {OfferEntity} from "../offer";
-import {CommentEntity} from "./comment.entity";
-import {CommentService} from "./comment-service.interface.js";
-import {CreateCommentDTO} from "./dto/create-comment.dto.js";
+import {injectable, inject} from 'inversify';
+import {Component} from '../../../types/index.js';
+import {Logger} from '../../libs/logger/index.js';
+import {DocumentType, types} from '@typegoose/typegoose';
+import {OfferEntity} from '../offer/index.js';
+import {CommentEntity} from './comment.entity.js';
+import {CommentService} from './comment-service.interface.js';
+import {CreateCommentDTO} from './dto/create-comment.dto.js';
 
 @injectable()
 export class DefaultCommentService implements CommentService {

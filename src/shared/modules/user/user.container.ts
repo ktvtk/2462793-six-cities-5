@@ -5,8 +5,8 @@ import { DefaultUserService } from './index.js';
 import { types } from '@typegoose/typegoose';
 import { UserEntity, UserModel } from './user.entity.js';
 
-export function createUserContainer(parent?: Container) {
-  const container = new Container({ parent });
+export function createUserContainer() {
+  const container = new Container();
 
   container.bind<UserService>(Component.UserService).to(DefaultUserService).inSingletonScope();
   container.bind<types.ModelType<UserEntity>>(Component.UserModel).toConstantValue(UserModel);

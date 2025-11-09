@@ -1,8 +1,8 @@
 import {Container} from 'inversify';
 import {Component} from '../../../types/index.js';
 import {types} from '@typegoose/typegoose';
-import {CommentEntity, CommentModel} from './comment.entity';
-import {CommentService} from './comment-service.interface';
+import {CommentEntity, CommentModel} from './comment.entity.js';
+import {CommentService} from './comment-service.interface.js';
 import {DefaultCommentService} from './default-comment-service.js';
 
 export function createCommentContainer () {

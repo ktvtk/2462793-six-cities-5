@@ -34,7 +34,7 @@ export class ImportCommand implements Command {
   private async onImportedLine(line: string, resolve: () => void) {
     const offer = parseOffer(line);
     await this.saveOffer(offer);
-    resolve()
+    resolve();
   }
 
   private onCompleteImport(count: number) {
