@@ -9,6 +9,7 @@ import express, {Express} from 'express';
 import {OfferController} from '../shared/modules/offer/index.js';
 import {ExceptionFilter} from '../shared/libs/rest/index.js';
 import {UserController} from '../shared/modules/user/index.js';
+import {CommentController} from '../shared/modules/comment/index.js';
 
 @injectable()
 export class RestApplication {
@@ -21,6 +22,7 @@ export class RestApplication {
     @inject(Component.UserController) private readonly userController: UserController,
     @inject(Component.OfferController) private readonly offerController: OfferController,
     @inject(Component.ExceptionFilter) private readonly defaultExceptionFilter: ExceptionFilter,
+    @inject(Component.CommentController) private readonly commentController: CommentController,
   ) {
     this.server = express();
   }
@@ -45,6 +47,7 @@ export class RestApplication {
   private async _initControllers() {
     this.server.use('/users', this.userController.router);
     this.server.use('/offers', this.offerController.router);
+    this.server.use('/comments', this.commentController.router);
   }
 
   private async _initMiddleware() {
@@ -75,7 +78,7 @@ export class RestApplication {
     await this._initExceptionFilters();
     this.logger.info('Init exception filters completed.');
 
-    this.logger.info('Try to init server…');
+    this.logger.info('Try to init server...');
     await this._initServer();
     this.logger.info(`Server started on http://localhost:${this.config.get('PORT')}`);
   }
