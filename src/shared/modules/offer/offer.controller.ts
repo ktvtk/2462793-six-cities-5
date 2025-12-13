@@ -1,5 +1,5 @@
 import {inject, injectable} from 'inversify';
-import {BaseController, HttpError, HttpMethod} from '../../libs/rest/index.js';
+import {BaseController, HttpError, HttpMethod, ValidateObjectIdMiddleware} from '../../libs/rest/index.js';
 import {Component} from '../../../types/index.js';
 import {Logger} from '../../libs/logger/index.js';
 import {OfferService} from './offer-service.interface.js';
@@ -10,22 +10,55 @@ import {CreateOfferDTO} from './dto/create-offer.dto.js';
 import {StatusCodes} from 'http-status-codes';
 import {UpdateOfferDTO} from './dto/update-offer.dto.js';
 import {offerIdType} from '../../../types/offerId.type.js';
+import {CommentService} from '../comment/index.js';
+import {ValidateDtoMiddleware} from '../../libs/rest/middleware/index.js';
+import {CommentRdo} from '../comment/index.js';
 
 @injectable()
 export class OfferController extends BaseController {
   constructor(
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.OfferService) private readonly offerService: OfferService,
+    @inject(Component.CommentService) private readonly commentService: CommentService
   ) {
     super(logger);
 
     this.logger.info('Register routes for OfferController...');
 
     this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
-    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Get, handler: this.show as unknown as (req: Request, res: Response) => void});
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Patch, handler: this.update as unknown as (req: Request, res: Response) => void});
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Delete, handler: this.delete as unknown as (req: Request, res: Response) => void});
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(CreateOfferDTO)]
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Get,
+      handler: this.show,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Delete,
+      handler: this.delete,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Patch,
+      handler: this.update,
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new ValidateDtoMiddleware(UpdateOfferDTO),
+      ]
+    });
+    this.addRoute({
+      path: '/:offerId/comments',
+      method: HttpMethod.Get,
+      handler: this.getComments,
+      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+    });
   }
 
   public async index(_req: Request, res: Response): Promise<void> {
@@ -63,7 +96,6 @@ export class OfferController extends BaseController {
     const existOffer = await this.offerService.findById(offerId);
     if (!existOffer) {
       throw new HttpError(StatusCodes.NOT_FOUND, 'Offer not found', 'OfferController');
-      // throw new HttpError(StatusCodes.FORBIDDEN, 'Not enough rights', 'OfferController');
     }
 
     const result = await this.offerService.updateById(offerId, body);
@@ -79,6 +111,22 @@ export class OfferController extends BaseController {
       throw new HttpError(StatusCodes.NOT_FOUND, 'Offer not found', 'OfferController');
     }
     await this.offerService.deleteById(offerId);
+
+    await this.commentService.deleteByOfferId(offerId);
+
     this.noContent(res, {});
+  }
+
+  public async getComments({ params }: Request<offerIdType>, res: Response): Promise<void> {
+    if (!await this.offerService.exists(params.offerId)) {
+      throw new HttpError(
+        StatusCodes.NOT_FOUND,
+        `Offer with id ${params.offerId} not found.`,
+        'OfferController'
+      );
+    }
+
+    const comments = await this.commentService.findByOfferId(params.offerId);
+    this.ok(res, fillDto(CommentRdo, comments));
   }
 }
