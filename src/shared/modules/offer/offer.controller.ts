@@ -13,6 +13,7 @@ import {offerIdType} from '../../../types/offerId.type.js';
 import {CommentService} from '../comment/index.js';
 import {ValidateDtoMiddleware} from '../../libs/rest/middleware/index.js';
 import {CommentRdo} from '../comment/index.js';
+import {ExistingDocumentMiddleware} from '../../libs/rest/middleware/index.js';
 
 @injectable()
 export class OfferController extends BaseController {
@@ -36,13 +37,19 @@ export class OfferController extends BaseController {
       path: '/:offerId',
       method: HttpMethod.Get,
       handler: this.show,
-      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new ExistingDocumentMiddleware(this.offerService, 'Offer', 'offerId'),
+      ]
     });
     this.addRoute({
       path: '/:offerId',
       method: HttpMethod.Delete,
       handler: this.delete,
-      middlewares: [new ValidateObjectIdMiddleware('offerId')]
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new ExistingDocumentMiddleware(this.offerService, 'Offer', 'offerId'),
+      ]
     });
     this.addRoute({
       path: '/:offerId',
@@ -51,6 +58,7 @@ export class OfferController extends BaseController {
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(UpdateOfferDTO),
+        new ExistingDocumentMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
     });
     this.addRoute({
