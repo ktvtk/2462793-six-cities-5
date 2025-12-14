@@ -11,3 +11,4 @@ export * from './types/request-body.type.js';
 export * from './types/request-params.type.js';
 export * from './middleware/middleware.interface.js';
 export * from './middleware/validate-objectid.middleware.js';
+export * from './types/existing-document.interface.js';

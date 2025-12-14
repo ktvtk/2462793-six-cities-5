@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { BaseController, HttpError, HttpMethod } from '../../libs/rest/index.js';
+import {BaseController, HttpError, HttpMethod, ValidateObjectIdMiddleware} from '../../libs/rest/index.js';
 import { Component } from '../../../types/index.js';
 import { Logger } from '../../libs/logger/index.js';
 import { NextFunction, Request, Response } from 'express';
@@ -10,6 +10,7 @@ import { StatusCodes } from 'http-status-codes';
 import { fillDto } from '../../helpers/common.js';
 import { UserRdo } from './rdo/user.rdo.js';
 import { LoginUserRequestType } from './login-user-request.type.js';
+import {FileUploadMiddleware} from '../../libs/rest/middleware/index.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -26,6 +27,15 @@ export class UserController extends BaseController {
     this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login });
     this.addRoute({ path: '/login', method: HttpMethod.Get, handler: this.check });
     this.addRoute({ path: '/logout', method: HttpMethod.Post, handler: this.logout });
+    this.addRoute({
+      path: '/:userId/avatar',
+      method: HttpMethod.Post,
+      handler: this.uploadAvatar,
+      middlewares: [
+        new ValidateObjectIdMiddleware('userId'),
+        new FileUploadMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatar'),
+      ]
+    });
   }
 
   public async create(
@@ -76,5 +86,11 @@ export class UserController extends BaseController {
     _next: NextFunction
   ): Promise<void> {
     this.ok(res, { message: 'Logged out succesfully' });
+  }
+
+  public async uploadAvatar(req: Request, res: Response) {
+    this.created(res, {
+      filepath: req.file?.path
+    });
   }
 }
