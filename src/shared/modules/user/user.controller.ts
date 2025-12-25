@@ -11,6 +11,8 @@ import { fillDto } from '../../helpers/common.js';
 import { UserRdo } from './rdo/user.rdo.js';
 import { LoginUserRequestType } from './login-user-request.type.js';
 import {FileUploadMiddleware} from '../../libs/rest/middleware/index.js';
+import {AuthService} from '../auth/index.js';
+import {LoggedUserRdo} from './rdo/logged-user.rdo.js';
 
 @injectable()
 export class UserController extends BaseController {
@@ -18,6 +20,7 @@ export class UserController extends BaseController {
     @inject(Component.Logger) protected readonly logger: Logger,
     @inject(Component.UserService) private readonly userService: UserService,
     @inject(Component.Config) private readonly configService: Config<RestSchema>,
+    @inject(Component.AuthService) private readonly authService: AuthService,
   ) {
     super(logger);
 
@@ -25,7 +28,6 @@ export class UserController extends BaseController {
 
     this.addRoute({ path: '/register', method: HttpMethod.Post, handler: this.create });
     this.addRoute({ path: '/login', method: HttpMethod.Post, handler: this.login });
-    this.addRoute({ path: '/login', method: HttpMethod.Get, handler: this.check });
     this.addRoute({ path: '/logout', method: HttpMethod.Post, handler: this.logout });
     this.addRoute({
       path: '/:userId/avatar',
@@ -35,6 +37,11 @@ export class UserController extends BaseController {
         new ValidateObjectIdMiddleware('userId'),
         new FileUploadMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'avatar'),
       ]
+    });
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Get,
+      handler: this.checkAuthenticate,
     });
   }
 
@@ -54,30 +61,29 @@ export class UserController extends BaseController {
   }
 
   public async login(
-    { body }: LoginUserRequestType, _res: Response,
-  ): Promise<void> {
-    const existUser = await this.userService.findByEmail(body.email);
-    if (!existUser) {
-      const existUserError = new Error(`User with email ${body.email} not found`);
-      this.error(_res, StatusCodes.UNAUTHORIZED, { error: existUserError });
-      return this.logger.error(existUserError.message, existUserError);
-    }
-
-    return this.logger.error('Not implemented', new Error('Not implemented'));
-  }
-
-  public async check(
     { body }: LoginUserRequestType, res: Response,
   ): Promise<void> {
-    const existUser = await this.userService.findByEmail(body.email);
-    if (!existUser) {
-      const existUserError = new Error(`User with email ${body.email} not found`);
-      this.error(res, StatusCodes.UNAUTHORIZED, { error: existUserError });
-      return this.logger.error(existUserError.message, existUserError);
+    const user = await this.authService.verify(body);
+    const token = await this.authService.authenticate(user);
+    const responseData = fillDto(LoggedUserRdo, {
+      email: user.email,
+      token,
+    });
+    this.ok(res, responseData);
+  }
+
+  public async checkAuthenticate({ tokenPayload: { email }}: Request, res: Response) {
+    const foundedUser = await this.userService.findByEmail(email);
+
+    if (! foundedUser) {
+      throw new HttpError(
+        StatusCodes.UNAUTHORIZED,
+        'Unauthorized',
+        'UserController'
+      );
     }
 
-    this.ok(res, fillDto(UserRdo, existUser));
-    return this.logger.error('Not implemented', new Error('Not implemented'));
+    this.ok(res, fillDto(LoggedUserRdo, foundedUser));
   }
 
   public async logout(

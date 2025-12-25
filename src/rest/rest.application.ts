@@ -10,6 +10,7 @@ import {OfferController} from '../shared/modules/offer/index.js';
 import {ExceptionFilter} from '../shared/libs/rest/index.js';
 import {UserController} from '../shared/modules/user/index.js';
 import {CommentController} from '../shared/modules/comment/index.js';
+import {ParseTokenMiddleware} from '../shared/libs/rest/middleware/index.js';
 
 @injectable()
 export class RestApplication {
@@ -23,6 +24,7 @@ export class RestApplication {
     @inject(Component.OfferController) private readonly offerController: OfferController,
     @inject(Component.ExceptionFilter) private readonly defaultExceptionFilter: ExceptionFilter,
     @inject(Component.CommentController) private readonly commentController: CommentController,
+    @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: ExceptionFilter,
   ) {
     this.server = express();
   }
@@ -51,12 +53,15 @@ export class RestApplication {
   }
 
   private async _initMiddleware() {
+    const authenticateMiddleware = new ParseTokenMiddleware(this.config.get('JWT_SECRET'));
     this.server.use(express.json());
     this.server.use('/upload', express.static(this.config.get('UPLOAD_DIRECTORY')));
+    this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
   }
 
   private async _initExceptionFilters() {
     this.server.use(this.defaultExceptionFilter.catch.bind(this.defaultExceptionFilter));
+    this.server.use(this.authExceptionFilter.catch.bind(this.authExceptionFilter));
   }
 
   public async init() {
