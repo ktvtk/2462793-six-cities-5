@@ -11,7 +11,7 @@ import {StatusCodes} from 'http-status-codes';
 import {UpdateOfferDTO} from './dto/update-offer.dto.js';
 import {offerIdType} from '../../../types/offerId.type.js';
 import {CommentService} from '../comment/index.js';
-import {ValidateDtoMiddleware} from '../../libs/rest/middleware/index.js';
+import {PrivateRouteMiddleware, ValidateDtoMiddleware} from '../../libs/rest/middleware/index.js';
 import {CommentRdo} from '../comment/index.js';
 import {ExistingDocumentMiddleware} from '../../libs/rest/middleware/index.js';
 
@@ -31,7 +31,9 @@ export class OfferController extends BaseController {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(CreateOfferDTO)]
+      middlewares: [
+        new ValidateDtoMiddleware(CreateOfferDTO),
+        new PrivateRouteMiddleware(),]
     });
     this.addRoute({
       path: '/:offerId',
@@ -39,6 +41,7 @@ export class OfferController extends BaseController {
       handler: this.show,
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
+        new PrivateRouteMiddleware(),
         new ExistingDocumentMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
     });
@@ -48,6 +51,7 @@ export class OfferController extends BaseController {
       handler: this.delete,
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
+        new PrivateRouteMiddleware(),
         new ExistingDocumentMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
     });
@@ -57,6 +61,7 @@ export class OfferController extends BaseController {
       handler: this.update,
       middlewares: [
         new ValidateObjectIdMiddleware('offerId'),
+        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(UpdateOfferDTO),
         new ExistingDocumentMiddleware(this.offerService, 'Offer', 'offerId'),
       ]
@@ -76,10 +81,10 @@ export class OfferController extends BaseController {
   }
 
   public async create(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDTO>,
+    { body, tokenPayload }: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDTO>,
     res: Response
   ): Promise<void> {
-    const result = await this.offerService.create(body);
+    const result = await this.offerService.create({ ...body, authorId: tokenPayload.id });
     this.created(res, fillDto(OfferRdo, result));
   }
 

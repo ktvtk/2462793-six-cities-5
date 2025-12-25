@@ -2,6 +2,7 @@ import { FavoriteService } from './favorite-service.interface.js';
 import {DocumentType} from '@typegoose/typegoose';
 import { injectable } from 'inversify';
 import {FavoriteEntity, FavoriteModel} from './favorite.entity.js';
+import {OfferEntity, OfferModel} from '../offer/index.js';
 
 @injectable()
 export class DefaultFavoriteService implements FavoriteService {
@@ -11,11 +12,13 @@ export class DefaultFavoriteService implements FavoriteService {
       .exec();
   }
 
-  public async find(): Promise<DocumentType<FavoriteEntity>[]> {
-    return FavoriteModel
+  public async find(userId?: string): Promise<DocumentType<OfferEntity>[]> {
+    const offers = await OfferModel
       .find()
-      .populate(['user', 'offer'])
+      .populate(['authorId'])
       .exec();
+
+    return this.setFavoriteFlags(offers, userId);
   }
 
   public async findByUserId(userId: string): Promise<DocumentType<FavoriteEntity>[]> {
@@ -52,5 +55,22 @@ export class DefaultFavoriteService implements FavoriteService {
   public async getFavoriteOfferIds(userId: string): Promise<string[]> {
     const favorites = await FavoriteModel.find({ user: userId }).select('offer').exec();
     return favorites.map((fav) => fav.offer.toString());
+  }
+
+  private async setFavoriteFlags(offers: DocumentType<OfferEntity>[], userId?: string): Promise<DocumentType<OfferEntity>[]> {
+    if (!userId) {
+      return offers.map((offer) => {
+        offer.isFavorite = false;
+        return offer;
+      });
+    }
+
+    const favorites = await FavoriteModel.find({ userId }).exec();
+    const favoriteOfferIds = new Set(favorites.map((fav) => fav.offer.toString()));
+
+    return offers.map((offer) => {
+      offer.isFavorite = favoriteOfferIds.has(offer.id);
+      return offer;
+    });
   }
 }

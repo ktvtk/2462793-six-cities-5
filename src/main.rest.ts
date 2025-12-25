@@ -7,6 +7,7 @@ import { createOfferContainer } from './shared/modules/offer/index.js';
 import {createCommentContainer} from './shared/modules/comment/index.js';
 import {Container} from 'inversify';
 import {createFavoritesContainer} from './shared/modules/favorites/favorites.container.js';
+import {createAuthContainer} from './shared/modules/auth/index.js';
 
 async function bootstrap() {
   const appContainer = Container.merge(
@@ -15,6 +16,7 @@ async function bootstrap() {
     createOfferContainer(),
     createCommentContainer(),
     createFavoritesContainer(),
+    createAuthContainer(),
   );
 
 
